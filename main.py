@@ -7,7 +7,7 @@ import modify
 
 
 #入力部
-imageword = u"短い"
+imageword = u"格好良い"
 
 #印象推定部
 ie = kyouritukyouki.ImpressionEstimate()
