@@ -7,7 +7,7 @@ import modify
 
 
 #入力部
-imageword = u"明るい"
+imageword = u"ナチュラルな"
 
 #印象推定部
 ie = kyouritukyouki.ImpressionEstimate()
