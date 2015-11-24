@@ -9,8 +9,8 @@ import xml.etree.ElementTree as ET
 
 class Websearch(object):
     def __init__(self):
-        self.username = "zgV2yQRb/Mxe+v7yT/+fj+bXrSG8WOed/WuxCLwQ/5o"
-        self.password = "zgV2yQRb/Mxe+v7yT/+fj+bXrSG8WOed/WuxCLwQ/5o"
+        self.username = "dmrBH6acofll06EdRi3gedJifZdN8aDoBAO6SikgsPo"
+        self.password = "dmrBH6acofll06EdRi3gedJifZdN8aDoBAO6SikgsPo"
 
     #認証と接続
     def track_stream(self, keyword):
