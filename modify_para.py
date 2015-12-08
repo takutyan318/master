@@ -44,33 +44,20 @@ class modify1(object):
 		finally:
 			f.close()
 
-	#１回目の探索範囲内からランダムに１０個選出
+	#座標を選ぶ＋パラメータ推定
 	def m1select(self, r, bestnum):
-		n = 10 #選出個数
-		h = {} #中心座標からの距離とそのサンプル番号
-		inR = [] #探索範囲内にあるサンプル番号
-		nextk = [] #１０個ランダムに選んで格納
+		n = 5 #選出個数
+		
 		#探索の中心座標
 		center1 = self.sample[bestnum-1][0]
 		center2 = self.sample[bestnum-1][1]
 		center3 = self.sample[bestnum-1][2]
 		center4 = self.sample[bestnum-1][3]
-		for i in range(0,545):
-			hirui = math.sqrt(math.pow(center1-self.sample[i][0],2) + math.pow(center2-self.sample[i][1],2) + math.pow(center3-self.sample[i][2],2) + math.pow(center4-self.sample[i][3],2))
-			h[i+1] = hirui
-		#非類似度がr以下のものを選び出す
-		for i in range(1,546):
-			if h[i] < r:
-				inR.insert(len(inR), i)
-
-		#ランダムに選ぶ
-		random.shuffle(inR)
-		if len(inR)>=10:
-			for i in range(n):
-				nextk.insert(len(nextk), inR[i])
-		else:
-			nextk = inR
-		return nextk
+		
+		range1_bottom = center1 - r #１軸の探索範囲
+		range2_bottom = center2 - r #２軸の探索範囲
+		range3_bottom = center3 - r #３軸の探索範囲
+		range4_bottom = center4 - r #４軸の探索範囲
 
 
 
