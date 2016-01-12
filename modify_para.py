@@ -61,9 +61,17 @@ class modify1(object):
 		center4 = self.sample[bestnum-1][3]
 		
 		range1_bottom = center1 - r #１軸の探索範囲
+		range1_top = center1 + r #１軸の探索範囲
 		range2_bottom = center2 - r #２軸の探索範囲
+		range2_top = center2 + r #２軸の探索範囲
 		range3_bottom = center3 - r #３軸の探索範囲
+		range3_top = center3 + r #３軸の探索範囲
 		range4_bottom = center4 - r #４軸の探索範囲
+		range4_top = center4 + r #４軸の探索範囲
+
+		selectedPoint = [0.0]*n
+		for i in range(n):
+
 
 
 
