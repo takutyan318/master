@@ -69,8 +69,15 @@ class modify1(object):
 		range4_bottom = center4 - r #４軸の探索範囲
 		range4_top = center4 + r #４軸の探索範囲
 
-		selectedPoint = [0.0]*n
+		#パラメータ推定を行う座標, 0:活動性軸値, 1:品性軸値, 2:重量感値, 3:親密性値
+		selectedPoint = numpy.zeros((n,4))
 		for i in range(n):
+			selectedPoint[i][0] = random.uniform(range1_bottom, range1_top)
+			selectedPoint[i][1] = random.uniform(range2_bottom, range2_top)
+			selectedPoint[i][2] = random.uniform(range3_bottom, range3_top)
+			selectedPoint[i][3] = random.uniform(range4_bottom, range4_top)
+		
+
 
 
 
