@@ -1,6 +1,10 @@
 #! /usr/bin/env python
 # coding: utf-8
 
+#パラメータ推定を導入した修正部
+#パラメータ推定に関して、前形はk近傍法を使い、その他のパラメータは加重平均を用いて行う。
+
+
 import output3
 import math
 import csv
@@ -24,9 +28,11 @@ class modify1(object):
 		r = self.alpha * math.fabs(7-v)
 		return r
 
-	#座標抽出
+	#各サンプルの感性情報とパラメータ値の格納
+	#0:活動性値, 1:品性値, 2:重量感値, 3:親密値, 4:前長, 5:横長, 6:後長, 7:前形, 8:ボリューム値, 9:ハネ有無
+	#file = "zahyou3.csv"
 	def readfile(self, file):
-		self.sample = numpy.zeros((545,4))  #サンプル座標格納用
+		self.sample = numpy.zeros((545,10))  #サンプル座標格納用
 		try:
 			samplenum = 0
 			elementnum = 0
@@ -125,11 +131,8 @@ class modify2(modify1):
 
 
 if __name__ == '__main__':
-	test = [1,2,3,4,5,6]
-	out1 = output3.App(test)
-	out1.pack()
-	out1.mainloop()
-	md = modify1(5, 2)
-	print md.nextkouho
+	md1 = modify1(1,1)
+	md1.readfile("zahyou3.csv")
+	print md1.sample[544]
 
 
