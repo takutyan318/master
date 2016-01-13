@@ -3,6 +3,7 @@
 
 #パラメータ推定を導入した修正部
 #パラメータ推定に関して、前形はk近傍法を使い、その他のパラメータは加重平均を用いて行う。
+#これはあくまでサブシステムである
 
 
 import output3
@@ -46,7 +47,7 @@ class modify1(object):
 				samplenum = samplenum + 1
 				elementnum = 0
 		except IOError:
-			print "ファイルが開けませんでした: zahyou2.csv"
+			print "ファイルが開けませんでした: zahyou3.csv"
 		finally:
 			f.close()
 
@@ -56,6 +57,8 @@ class modify1(object):
 		m = 5 #パラメータ推定において参照するサンプルの数
 		dis = {} #探索範囲の中心からの全てのサンプルに対する非類似度
 		base = [0]*m #パラメータ推定で参照するサンプル番号
+		sortlist = []
+		estimatedParam = numpy.zeros((n,6)) #推定されたパラメータ値格納用
 
 		
 		#探索の中心座標
@@ -73,15 +76,28 @@ class modify1(object):
 		range4_bottom = center4 - r #４軸の探索範囲
 		range4_top = center4 + r #４軸の探索範囲
 
-		#パラメータ推定を行う座標, 0:活動性軸値, 1:品性軸値, 2:重量感値, 3:親密性値
-		selectedPoint = numpy.zeros((n,4))
+
+		selectedPoint = numpy.zeros((n,4))  #パラメータ推定を行う座標, 0:活動性軸値, 1:品性軸値, 2:重量感値, 3:親密性値
 		for i in range(n):
 			selectedPoint[i][0] = random.uniform(range1_bottom, range1_top)
 			selectedPoint[i][1] = random.uniform(range2_bottom, range2_top)
 			selectedPoint[i][2] = random.uniform(range3_bottom, range3_top)
 			selectedPoint[i][3] = random.uniform(range4_bottom, range4_top)
 
+			#上記の点から非類似度が小さい順にn個見つけてくる
+			#上記の点と全てのサンプルの非類似度を求めて辞書disに格納
+			for j in range(545):
+				dis[j] = math.sqrt(math.pow(selectedPoint[i][0]-self.sample[j][0],2) + math.pow(selectedPoint[i][1]-self.sample[j][1],2) + math.pow(selectedPoint[i][2]-self.sample[j][2],2) + math.pow(selectedPoint[i][3]-self.sample[j][3],2))
+			#非類似度で辞書disをソーティングする
+			sortlist = sorted(self.dis.items(), key=lambda x:x[1])
+			#soetlist[i][0] = キー sortlist[i][1] = 非類似度
+			#参照されるサンプル番号をbaseに格納する
+			for j in m:
+				base[j] = sortlist[j][0]
 
+			#加重平均によるパラメータ推定
+			#使うもの：baseに格納されたサンプル番号のパラメータ値 = self.sample[base[i]][4~9]、その非類似度 = dis[base[i]]
+			
 
 
 
