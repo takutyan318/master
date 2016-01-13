@@ -53,6 +53,10 @@ class modify1(object):
 	#座標を選ぶ＋パラメータ推定
 	def m1select(self, r, bestnum):
 		n = 5 #選出個数
+		m = 5 #パラメータ推定において参照するサンプルの数
+		dis = {} #探索範囲の中心からの全てのサンプルに対する非類似度
+		base = [0]*m #パラメータ推定で参照するサンプル番号
+
 		
 		#探索の中心座標
 		center1 = self.sample[bestnum-1][0]
@@ -76,7 +80,7 @@ class modify1(object):
 			selectedPoint[i][1] = random.uniform(range2_bottom, range2_top)
 			selectedPoint[i][2] = random.uniform(range3_bottom, range3_top)
 			selectedPoint[i][3] = random.uniform(range4_bottom, range4_top)
-		
+
 
 
 
