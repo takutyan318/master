@@ -33,7 +33,9 @@ class modify1(object):
 	#0:活動性値, 1:品性値, 2:重量感値, 3:親密値, 4:前長, 5:横長, 6:後長, 7:前形, 8:ボリューム値, 9:ハネ有無
 	#file = "zahyou3.csv"
 	def readfile(self, file):
-		self.sample = numpy.zeros((545,10))  #サンプル座標格納用
+		paramnum = 6 #ヘアスタイルのパラメータ数
+		allparam = 4 + paramnum #ヘアスタイルのパラメータ + 因子軸数
+		self.sample = numpy.zeros((545, allparam))  #サンプル座標格納用
 		try:
 			samplenum = 0
 			elementnum = 0
@@ -53,12 +55,14 @@ class modify1(object):
 
 	#座標を選ぶ＋パラメータ推定
 	def m1select(self, r, bestnum):
-		n = 5 #選出個数
-		m = 5 #パラメータ推定において参照するサンプルの数
+		n = 10 #選出個数
+		m = 5 #パラメータ推定において参照するサンプルの数, k近傍法のパラメータ
+		paramnum = 6 #パラメータの数
+		frontshape_para = 7 #前形のパラメータ値が格納されている番号(self.sample[])
 		dis = {} #探索範囲の中心からの全てのサンプルに対する非類似度
 		base = [0]*m #パラメータ推定で参照するサンプル番号
 		sortlist = []
-		estimatedParam = numpy.zeros((n,6)) #推定されたパラメータ値格納用
+		estimatedParam = numpy.zeros((n,paramnum)) #推定されたパラメータ値格納用
 
 		
 		#探索の中心座標
@@ -86,18 +90,51 @@ class modify1(object):
 
 			#上記の点から非類似度が小さい順にn個見つけてくる
 			#上記の点と全てのサンプルの非類似度を求めて辞書disに格納
+			#dis = {0:サンプル１に対する非類似度, 1:サンプル２に対する非類似度, ・・・}
 			for j in range(545):
 				dis[j] = math.sqrt(math.pow(selectedPoint[i][0]-self.sample[j][0],2) + math.pow(selectedPoint[i][1]-self.sample[j][1],2) + math.pow(selectedPoint[i][2]-self.sample[j][2],2) + math.pow(selectedPoint[i][3]-self.sample[j][3],2))
 			#非類似度で辞書disをソーティングする
 			sortlist = sorted(self.dis.items(), key=lambda x:x[1])
 			#soetlist[i][0] = キー sortlist[i][1] = 非類似度
 			#参照されるサンプル番号をbaseに格納する
-			for j in m:
+			for j in range(m):
 				base[j] = sortlist[j][0]
 
 			#加重平均によるパラメータ推定
 			#使うもの：baseに格納されたサンプル番号のパラメータ値 = self.sample[base[i]][4~9]、その非類似度 = dis[base[i]]
-			
+			#前形パラメータ以外は加重平均、前形パラメータはk近傍法
+			for j in range(4,4+paramnum):
+				#加重平均
+				if j != frontshape_para: #jがfrontshape_paraの場合はスルー
+					bunnbo = 0.0
+					bunnsi = 0.0
+					for k in base:
+						bunnbo = bunnbo + 1/dis[k]
+						bunnsi = bunnsi + (1/dis[k]) * self.sample[k][j]
+					estimatedParam[i][j-4] = bunnsi / bunnbo
+				#k近傍法
+				else:
+					k_kosuu = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0} #前形のそれぞれのパラメータ値の出現回数をカウント
+					for k in base
+						if self.sample[k][j] == 0:
+							k_kosuu[0] = k_kosuu[0] + 1
+						elif self.sample[k][j] == 1:
+							k_kosuu[1] = k_kosuu[1] + 1
+						elif self.sample[k][j] == 2:
+							k_kosuu[2] = k_kosuu[2] + 1
+						elif self.sample[k][j] == 3:
+							k_kosuu[3] = k_kosuu[3] + 1
+						elif self.sample[k][j] == 4:
+							k_kosuu[4] = k_kosuu[4] + 1
+						elif self.sample[k][j] == 5:
+							k_kosuu[5] = k_kosuu[5] + 1
+						elif:
+							k_kosuu[6] = k_kosuu[6] + 1
+
+					tasuuketu = sorted(self.k_kosuu.items(), key=lambda x:x[1], reverse = True) #出現回数が多いパラメータ値の順番に並び変える
+					estimatedParam[i][j-4] = tasuuketu[0][0]
+
+
 
 
 
@@ -169,5 +206,7 @@ if __name__ == '__main__':
 	md1 = modify1(1,1)
 	md1.readfile("zahyou3.csv")
 	print md1.sample[544]
+	a,b,c,d, = 0
+	print a,b,c,d
 
 
