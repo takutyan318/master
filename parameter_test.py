@@ -9,7 +9,7 @@ import math
 import csv
 import numpy
 import random
-import kyouritukyouki.py
+import kyouritukyouki
 
 def weight_k_estimate(act, inte, weight, friend):  #引数は印象推定部から受け取る
 	m = 5 #パラメータ推定において参照するサンプルの数, k近傍法のパラメータ
@@ -23,12 +23,15 @@ def weight_k_estimate(act, inte, weight, friend):  #引数は印象推定部か�
 
 	for j in range(545):
 		dis[j] = math.sqrt(math.pow(act-sample[j][0],2) + math.pow(inte-sample[j][1],2) + math.pow(weight-sample[j][2],2) + math.pow(friend-sample[j][3],2))
+	print dis
 	#非類似度で辞書disをソーティングする
-	sortlist = sorted(self.dis.items(), key=lambda x:x[1])
+	sortlist = sorted(dis.items(), key=lambda x:x[1])
+	print sortlist
 	#soetlist[i][0] = キー sortlist[i][1] = 非類似度
 	#参照されるサンプル番号をbaseに格納する
 	for j in range(m):
 		base[j] = sortlist[j][0]
+	print base
 
 	#加重平均によるパラメータ推定
 	#使うもの：baseに格納されたサンプル番号のパラメータ値 = self.sample[base[i]][4~9]、その非類似度 = dis[base[i]]
@@ -45,7 +48,7 @@ def weight_k_estimate(act, inte, weight, friend):  #引数は印象推定部か�
 		#k近傍法
 		else:
 			k_kosuu = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0} #前形のそれぞれのパラメータ値の出現回数をカウント
-			for k in base
+			for k in base:
 				if sample[k][j] == 0:
 					k_kosuu[0] = k_kosuu[0] + 1
 				elif sample[k][j] == 1:
@@ -58,11 +61,25 @@ def weight_k_estimate(act, inte, weight, friend):  #引数は印象推定部か�
 					k_kosuu[4] = k_kosuu[4] + 1
 				elif sample[k][j] == 5:
 					k_kosuu[5] = k_kosuu[5] + 1
-				elif:
+				else:
 					k_kosuu[6] = k_kosuu[6] + 1
 
-			tasuuketu = sorted(self.k_kosuu.items(), key=lambda x:x[1], reverse = True) #出現回数が多いパラメータ値の順番に並び変える
-			estimatedParam[j-4] = tasuuketu[0][0]
+			print k_kosuu
+			tasuuketu = sorted(k_kosuu.items(), key=lambda x:x[1], reverse = True) #出現回数が多いパラメータ値の順番に並び変える
+			maxkaisuu = tasuuketu[0][1] #一番多い回数
+			same = [] #前形のそれぞれにパラメータ値の回数が被った時用　→　ランダムで決めるため
+			for z in tasuuketu:
+				print z
+				if z[1] == maxkaisuu:
+					print z[1]
+					print z[0]
+					same.append(z[0])
+			print same
+			random.shuffle(same)
+			print same
+
+			estimatedParam[j-4] = same[0]
+
 
 	return estimatedParam
 	
@@ -99,14 +116,18 @@ def readfile(file):
 
 
 if __name__ == '__main__':
-	imageword = "知的な"
+	imageword = u"軽い"
 	ie = kyouritukyouki.ImpressionEstimate()
-	ie.preprocess(imagewore)
+	ie.preprocess(imageword)
 	ie.estimateFactorValue()
 	voltAct = ie.getVoltage(0)
 	voltInteli = ie.getVoltage(1)
 	voltWeghit = ie.getVoltage(2)
 	voltClose = ie.getVoltage(3)
+	#voltAct = 0.1
+	#voltInteli = -0.5
+	#voltWeghit = 0.34
+	#voltClose = -0.55
 	result = weight_k_estimate(voltAct, voltInteli, voltWeghit, voltClose)
 	print result  #パラメータっ推定結果
 

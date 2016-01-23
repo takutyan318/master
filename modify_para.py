@@ -132,7 +132,15 @@ class modify1(object):
 							k_kosuu[6] = k_kosuu[6] + 1
 
 					tasuuketu = sorted(self.k_kosuu.items(), key=lambda x:x[1], reverse = True) #出現回数が多いパラメータ値の順番に並び変える
-					estimatedParam[i][j-4] = tasuuketu[0][0]
+					maxkaisuu = tasuuketu[0][1] #一番多い回数
+					same = [] #前形のそれぞれにパラメータ値の回数が被った時用　→　ランダムで決めるため
+					for z in tasuuketu:
+						if z[1] == maxkaisuu:
+							same.append(z[0])
+					print same
+					random.shuffle(same)
+					print same
+					estimatedParam[i][j-4] = same[0]
 
 
 
