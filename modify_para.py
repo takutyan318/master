@@ -63,6 +63,7 @@ class modify1(object):
 		base = [0]*m #パラメータ推定で参照するサンプル番号
 		sortlist = []
 		estimatedParam = numpy.zeros((n,paramnum)) #推定されたパラメータ値格納用
+		estimatedParam_kinji = numpy.zeros((n,paranum)) #estimatedParamの要素を整数化にする
 
 		
 		#探索の中心座標
@@ -112,6 +113,7 @@ class modify1(object):
 						bunnbo = bunnbo + 1/dis[k]
 						bunnsi = bunnsi + (1/dis[k]) * self.sample[k][j]
 					estimatedParam[i][j-4] = bunnsi / bunnbo
+					estimatedParam_kinji[i][j-4] = round(estimatedParam[i][j-4],0)
 				#k近傍法
 				else:
 					k_kosuu = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0} #前形のそれぞれのパラメータ値の出現回数をカウント
@@ -141,6 +143,8 @@ class modify1(object):
 					random.shuffle(same)
 					print same
 					estimatedParam[i][j-4] = same[0]
+					estimatedParam_kinji[i][j-4] = same[0]
+					
 
 
 

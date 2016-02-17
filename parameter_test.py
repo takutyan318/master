@@ -12,7 +12,7 @@ import random
 import kyouritukyouki
 
 def weight_k_estimate(act, inte, weight, friend):  #引数は印象推定部から受け取る
-	m = 5 #パラメータ推定において参照するサンプルの数, k近傍法のパラメータ
+	m = 7 #パラメータ推定において参照するサンプルの数, k近傍法のパラメータ
 	paramnum = 6 #パラメータの数
 	frontshape_para = 7 #前形のパラメータ値が格納されている番号(self.sample[])
 	dis = {} #探索範囲の中心からの全てのサンプルに対する非類似度
@@ -116,7 +116,7 @@ def readfile(file):
 
 
 if __name__ == '__main__':
-	imageword = u"軽い"
+	imageword = u"おしゃれな"
 	ie = kyouritukyouki.ImpressionEstimate()
 	ie.preprocess(imageword)
 	ie.estimateFactorValue()
