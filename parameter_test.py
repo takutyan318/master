@@ -94,7 +94,8 @@ def searchFromPara(parameter):
 	matchingnum = 0 #マッチングしたサンプル番号
 
 	for i in range(545):
-		if sample[i][4:] == parameter:
+		arraytrue = sample[i][4:] == parameter
+		if arraytrue:
 			matchingnum = i+1
 
 	print "推定された近似パラメータ"
@@ -130,19 +131,20 @@ def readfile(file):
 
 
 if __name__ == '__main__':
-	imageword = u"おしゃれな"
-	ie = kyouritukyouki.ImpressionEstimate()
-	ie.preprocess(imageword)
-	ie.estimateFactorValue()
-	voltAct = ie.getVoltage(0)
-	voltInteli = ie.getVoltage(1)
-	voltWeghit = ie.getVoltage(2)
-	voltClose = ie.getVoltage(3)
-	#voltAct = 0.1
-	#voltInteli = -0.5
-	#voltWeghit = 0.34
-	#voltClose = -0.55
+	#imageword = u"軽い"
+	#ie = kyouritukyouki.ImpressionEstimate()
+	#ie.preprocess(imageword)
+	#ie.estimateFactorValue()
+	#voltAct = ie.getVoltage(0)
+	#voltInteli = ie.getVoltage(1)
+	#voltWeghit = ie.getVoltage(2)
+	#voltClose = ie.getVoltage(3)
+	voltAct = 0.1
+	voltInteli = -0.5
+	voltWeghit = 0.34
+	voltClose = -0.55
 	result = weight_k_estimate(voltAct, voltInteli, voltWeghit, voltClose)
+	print result
 	print "-------------------------------------------------------------------"
 	estimatedImage = searchFromPara(result)
 	print "推定画像番号は" + str(estimatedImage)
