@@ -95,7 +95,7 @@ def searchFromPara(parameter):
 
 	for i in range(545):
 		arraytrue = sample[i][4:] == parameter
-		if arraytrue:
+		if arraytrue.all():
 			matchingnum = i+1
 
 	print "推定された近似パラメータ"
