@@ -11,13 +11,15 @@ import numpy
 import random
 import kyouritukyouki
 
+m = 5 #パラメータ推定において参照するサンプルの数, k近傍法のパラメータ
+paramnum = 6 #パラメータの数
+frontshape_para = 7 #前形のパラメータ値が格納されている番号(self.sample[])
+
 def weight_k_estimate(act, inte, weight, friend):  #引数は印象推定部から受け取る
-	m = 7 #パラメータ推定において参照するサンプルの数, k近傍法のパラメータ
-	paramnum = 6 #パラメータの数
-	frontshape_para = 7 #前形のパラメータ値が格納されている番号(self.sample[])
 	dis = {} #探索範囲の中心からの全てのサンプルに対する非類似度
 	base = [0]*m #パラメータ推定で参照するサンプル番号
 	estimatedParam = [0.0] * paramnum #推定されたパラメータ値格納用
+	estimatedPara_kinji = [0] * paramnum #推定値を四捨五入したもの
 
 	sample = readfile("zahyou3.csv")
 
@@ -45,6 +47,7 @@ def weight_k_estimate(act, inte, weight, friend):  #引数は印象推定部か�
 				bunnbo = bunnbo + 1/dis[k]
 				bunnsi = bunnsi + (1/dis[k]) * sample[k][j]
 			estimatedParam[j-4] = bunnsi / bunnbo
+			estimatedPara_kinji[j-4] = round(estimatedParam[j-4], 0)
 		#k近傍法
 		else:
 			k_kosuu = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0} #前形のそれぞれのパラメータ値の出現回数をカウント
@@ -79,9 +82,23 @@ def weight_k_estimate(act, inte, weight, friend):  #引数は印象推定部か�
 			print same
 
 			estimatedParam[j-4] = same[0]
+			estimatedPara_kinji[j-4] = same[0]
 
 
-	return estimatedParam
+	#return estimatedParam
+	return estimatedPara_kinji
+
+
+def searchFromPara(parameter):
+	sample = readfile("zahyou3.csv")
+	matchingnum = 0 #マッチングしたサンプル番号
+
+	for i in range(545):
+		if sample[i][4:] == parameter:
+			matchingnum = i+1
+
+	return matchingnum
+
 	
 
 
@@ -91,7 +108,6 @@ def weight_k_estimate(act, inte, weight, friend):  #引数は印象推定部か�
 
 
 def readfile(file):
-	paramnum = 6 #ヘアスタイルのパラメータ数
 	allparam = 4 + paramnum #ヘアスタイルのパラメータ + 因子軸数
 	sample = numpy.zeros((545, allparam))  #サンプル座標格納用
 	try:
