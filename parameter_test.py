@@ -97,13 +97,9 @@ def searchFromPara(parameter):
 		if sample[i][4:] == parameter:
 			matchingnum = i+1
 
+	print sample
+	print parameter
 	return matchingnum
-
-	
-
-
-
-
 
 
 
@@ -145,7 +141,12 @@ if __name__ == '__main__':
 	#voltWeghit = 0.34
 	#voltClose = -0.55
 	result = weight_k_estimate(voltAct, voltInteli, voltWeghit, voltClose)
+	print "近似推定パラメータ："
 	print result  #パラメータっ推定結果
+	print "---------------------------"
+	estimatedImage = searchFromPara(result)
+	print "推定画像番号は" + str(estimatedImage)
+
 
 
 
