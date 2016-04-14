@@ -144,6 +144,12 @@ class modify1(object):
 					print same
 					estimatedParam[i][j-4] = same[0]
 					estimatedParam_kinji[i][j-4] = same[0]
+
+			return estimetedParam_kinji
+
+	#候補のヘアスタイル番号を返す
+	def hairdesign():
+
 					
 
 

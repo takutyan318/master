@@ -10,6 +10,7 @@ import csv
 import numpy
 import random
 import kyouritukyouki
+import sys
 
 m = 5 #パラメータ推定において参照するサンプルの数, k近傍法のパラメータ
 paramnum = 6 #パラメータの数
@@ -96,12 +97,13 @@ def searchFromPara(parameter):
 	for i in range(545):
 		arraytrue = sample[i][4:] == parameter
 		if arraytrue.all():
+			print "該当サンプルあり"
 			matchingnum = i+1
 
-	print "推定された近似パラメータ"
+	print u"推定された近似パラメータ"
 	print parameter
-	print "推定されたサンプル情報"
-	print sample[i]
+	print u"推定されたサンプル情報"
+	print sample[matchingnum-1]
 	return matchingnum
 
 
@@ -139,15 +141,19 @@ if __name__ == '__main__':
 	#voltInteli = ie.getVoltage(1)
 	#voltWeghit = ie.getVoltage(2)
 	#voltClose = ie.getVoltage(3)
-	voltAct = 0.1
-	voltInteli = -0.5
-	voltWeghit = 0.34
-	voltClose = -0.55
-	result = weight_k_estimate(voltAct, voltInteli, voltWeghit, voltClose)
-	print result
+	#voltAct = 0.5
+	#voltInteli = -0.2
+	#voltWeghit = -0.34
+	#voltClose = 0.3
+	#result = weight_k_estimate(voltAct, voltInteli, voltWeghit, voltClose)
+	#print result
+	c_hikisuu = sys.argv
+	param = c_hikisuu[1:]
+	param_int = map(int, param)
 	print "-------------------------------------------------------------------"
-	estimatedImage = searchFromPara(result)
-	print "推定画像番号は" + str(estimatedImage)
+	print param_int
+	estimatedImage = searchFromPara(param_int)
+	print u"推定画像番号は" + str(estimatedImage)
 
 
 
