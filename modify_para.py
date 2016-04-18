@@ -148,7 +148,16 @@ class modify1(object):
 			return estimetedParam_kinji
 
 	#候補のヘアスタイル番号を返す
-	def hairdesign():
+	def hairdesign(estimatedParam):
+		samplepara = self.sample[i][4:]
+		matchingnum = 0
+		for i in range(545):
+			if estimatedParam == samplepara:
+				matchingnum = i + 1   //推定パラメータと完全に一致した画像番号
+
+		//完全一致するパラメータをもったサンプルがなかった場合
+		if matchingnum == 0:
+			
 
 					
 
