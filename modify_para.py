@@ -25,8 +25,8 @@ class modify1(object):
 		#self.nextkouho = self.m1select(self.r, self.bestnum)
 
 	#探索範囲
-	def searchRange(self,v):
-		r = self.alpha * math.fabs(7-v)
+	def searchRange(self):
+		r = self.alpha * math.fabs(7-self.bestvalue)
 		return r
 
 	#各サンプルの感性情報とパラメータ値の格納
@@ -54,7 +54,7 @@ class modify1(object):
 			f.close()
 
 	#座標を選ぶ＋パラメータ推定
-	def m1select(self, r, bestnum):
+	def m1select(self, r):
 		n = 10 #選出個数
 		m = 5 #パラメータ推定において参照するサンプルの数, k近傍法のパラメータ
 		paramnum = 6 #パラメータの数
@@ -67,10 +67,10 @@ class modify1(object):
 
 		
 		#探索の中心座標
-		center1 = self.sample[bestnum-1][0]
-		center2 = self.sample[bestnum-1][1]
-		center3 = self.sample[bestnum-1][2]
-		center4 = self.sample[bestnum-1][3]
+		center1 = self.sample[self.bestnum-1][0]
+		center2 = self.sample[self.bestnum-1][1]
+		center3 = self.sample[self.bestnum-1][2]
+		center4 = self.sample[self.bestnum-1][3]
 		
 		range1_bottom = center1 - r #１軸の探索範囲
 		range1_top = center1 + r #１軸の探索範囲
@@ -117,7 +117,7 @@ class modify1(object):
 				#k近傍法
 				else:
 					k_kosuu = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0} #前形のそれぞれのパラメータ値の出現回数をカウント
-					for k in base
+					for k in base:
 						if self.sample[k][j] == 0:
 							k_kosuu[0] = k_kosuu[0] + 1
 						elif self.sample[k][j] == 1:
@@ -130,7 +130,7 @@ class modify1(object):
 							k_kosuu[4] = k_kosuu[4] + 1
 						elif self.sample[k][j] == 5:
 							k_kosuu[5] = k_kosuu[5] + 1
-						elif:
+						else:
 							k_kosuu[6] = k_kosuu[6] + 1
 
 					tasuuketu = sorted(self.k_kosuu.items(), key=lambda x:x[1], reverse = True) #出現回数が多いパラメータ値の順番に並び変える
@@ -145,7 +145,7 @@ class modify1(object):
 					estimatedParam[i][j-4] = same[0]
 					estimatedParam_kinji[i][j-4] = same[0]
 
-			return estimetedParam_kinji
+			return estimatedParam_kinji
 
 	#候補のヘアスタイル番号を返す
 	def hairdesign(estimatedParam):
@@ -153,10 +153,10 @@ class modify1(object):
 		matchingnum = 0
 		for i in range(545):
 			if estimatedParam == samplepara:
-				matchingnum = i + 1   //推定パラメータと完全に一致した画像番号
+				matchingnum = i + 1   #推定パラメータと完全に一致した画像番号
 
-		//完全一致するパラメータをもったサンプルがなかった場合
-		if matchingnum == 0:
+		#完全一致するパラメータをもったサンプルがなかった場合
+		#if matchingnum == 0:
 			
 
 					
@@ -233,7 +233,5 @@ if __name__ == '__main__':
 	md1 = modify1(1,1)
 	md1.readfile("zahyou3.csv")
 	print md1.sample[544]
-	a,b,c,d, = 0
-	print a,b,c,d
 
 

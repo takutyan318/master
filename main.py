@@ -33,15 +33,15 @@ print "------------------------------"
 print "１回目の修正"
 absolute = f_out.abhyouka_kakutei  #絶対評価値
 best = f_out.sampimg[f_out.bestnum]  #ベストの番号
-md1 = modify.modify1(absolute, best)
+md1 = modify.modify1(best, absolute)
 md1.readfile('zahyou2.csv')
 currentcenter = [md1.sample[best-1][0], md1.sample[best-1][1], md1.sample[best-1][2], md1.sample[best-1][3]]
 print u"中心"
 print currentcenter
-r = md1.searchRange(absolute)  #探索範囲
+r = md1.searchRange()  #探索範囲
 print "半径"
 print r
-nextcandidate = md1.m1select(r,best)  #新たな候補１０個
+nextcandidate = md1.m1select(r)  #新たな候補１０個
 
 #２回目以降の表示と修正（無限loop）
 n = 2
@@ -61,7 +61,7 @@ while(True):
 	c = md2.cmove(relative, best, nextcandidate)  #新たな探索範囲の中心
 	print "中心"
 	print c
-	r = md2.searchRange(absolute) #新たな探索範囲
+	r = md2.searchRange() #新たな探索範囲
 	print "半径"
 	print r
 	nextcandidate = md2.m2select(r,c)

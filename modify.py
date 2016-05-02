@@ -20,8 +20,8 @@ class modify1(object):
 		#self.nextkouho = self.m1select(self.r, self.bestnum)
 
 	#探索範囲
-	def searchRange(self,v):
-		r = self.alpha * math.fabs(7-v)
+	def searchRange(self):
+		r = self.alpha * math.fabs(7-self.bestvalue)
 		return r
 
 	#座標抽出
@@ -45,16 +45,16 @@ class modify1(object):
 			f.close()
 
 	#１回目の探索範囲内からランダムに１０個選出
-	def m1select(self, r, bestnum):
+	def m1select(self, r):
 		n = 10 #選出個数
 		h = {} #中心座標からの距離とそのサンプル番号
 		inR = [] #探索範囲内にあるサンプル番号
 		nextk = [] #１０個ランダムに選んで格納
 		#探索の中心座標
-		center1 = self.sample[bestnum-1][0]
-		center2 = self.sample[bestnum-1][1]
-		center3 = self.sample[bestnum-1][2]
-		center4 = self.sample[bestnum-1][3]
+		center1 = self.sample[self.bestnum-1][0]
+		center2 = self.sample[self.bestnum-1][1]
+		center3 = self.sample[self.bestnum-1][2]
+		center4 = self.sample[self.bestnum-1][3]
 		for i in range(0,545):
 			hirui = math.sqrt(math.pow(center1-self.sample[i][0],2) + math.pow(center2-self.sample[i][1],2) + math.pow(center3-self.sample[i][2],2) + math.pow(center4-self.sample[i][3],2))
 			h[i+1] = hirui
