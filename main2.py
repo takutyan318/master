@@ -1,17 +1,16 @@
 #! /usr/bin/env python
 # coding: utf-8
 
+
+#パラメータ推定機能を実装した修正があるmain
+
 import kyouritukyouki
 import output3
 import modify
-import sys
 
 
 #入力部
-imageword = sys.argv[1]
-imageword = imageword.decode('utf-8')  #日本語の文字列処理を行うため文字列をunicode文字列に変換する必要がある
-print u"入力後: " + imageword
-
+imageword = u"かわいい"
 
 #印象推定部
 ie = kyouritukyouki.ImpressionEstimate()
@@ -38,7 +37,7 @@ print "１回目の修正"
 absolute = f_out.abhyouka_kakutei  #絶対評価値
 best = f_out.sampimg[f_out.bestnum]  #ベストの番号
 md1 = modify.modify1(best, absolute)
-md1.readfile('zahyou2.csv')
+md1.readfile('zahyou3.csv')
 currentcenter = [md1.sample[best-1][0], md1.sample[best-1][1], md1.sample[best-1][2], md1.sample[best-1][3]]
 print u"中心"
 print currentcenter
@@ -61,7 +60,7 @@ while(True):
 	absolute = s_out.abhyouka_kakutei #絶対評価値
 	relative = s_out.rehyouka_kakutei #相対評価値（リスト）
 	md2 = modify.modify2(best,absolute,relative)
-	md2.readfile('zahyou2.csv')
+	md2.readfile('zahyou3.csv')
 	c = md2.cmove(relative, best, nextcandidate)  #新たな探索範囲の中心
 	print "中心"
 	print c
@@ -71,8 +70,3 @@ while(True):
 	nextcandidate = md2.m2select(r,c)
 	best = s_out.sampimg[s_out.bestnum]
 	n = n + 1
-
-
-
-
-

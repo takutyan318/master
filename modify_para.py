@@ -5,7 +5,7 @@
 #パラメータ推定に関して、前形はk近傍法を使い、その他のパラメータは加重平均を用いて行う。
 #これはあくまでサブシステムである
 
-
+import kyouritukyouki
 import output3
 import math
 import csv
@@ -230,10 +230,43 @@ class modify2(modify1):
 
 
 if __name__ == '__main__':
-	md1 = modify1(1,1)
-	md1.readfile("zahyou3.csv")
-	r = md1.searchRange()
-	a = md1.m1select(r)
-	print a
+	#入力部
+	imageword = u"かわいい"
+
+	#印象推定部
+	ie = kyouritukyouki.ImpressionEstimate()
+	ie.preprocess(imageword)  #イメージ語の言語的処理
+	ie.estimateFactorValue()  #印象値推定
+	voltAct = ie.getVoltage(0)
+	voltInteli = ie.getVoltage(1)
+	voltWeghit = ie.getVoltage(2)
+	voltClose = ie.getVoltage(3)
+	select = kyouritukyouki.Select(voltAct,voltInteli,voltWeghit,voltClose)
+	select.readPoint('zahyou2.csv')
+	select.sensyutu()
+
+	#初期出力表示
+	firstkouho = select.getSyokinum()
+	f_out = output3.App(firstkouho)
+	f_out.display()
+	f_out.pack()
+	f_out.mainloop()
+
+	#１回目修正部
+	print "------------------------------"
+	print "１回目の修正"
+	absolute = f_out.abhyouka_kakutei  #絶対評価値
+	best = f_out.sampimg[f_out.bestnum]  #ベストの番号
+	md1 = modify1(best, absolute)
+	md1.readfile('zahyou3.csv')
+	currentcenter = [md1.sample[best-1][0], md1.sample[best-1][1], md1.sample[best-1][2], md1.sample[best-1][3]]
+	print u"中心"
+	print currentcenter
+	r = md1.searchRange()  #探索範囲
+	print "半径"
+	print r
+	print md1.m1select(r)
+
+
 
 
