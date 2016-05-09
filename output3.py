@@ -47,9 +47,9 @@ class App(Tk.Frame):
 		#画像の表示部分
 		for imgnum in self.sampimg:
 			#画像の読み込みとサイズ変更
-			imgname1 = "sample" + str(imgnum) + "_front.jpeg"
-			imgname2 = "sample" + str(imgnum) + "_side.jpeg"
-			imgname3 = "sample" + str(imgnum) + "_back.jpeg"
+			imgname1 = "image/sample" + str(imgnum) + "_front.jpeg"
+			imgname2 = "image/sample" + str(imgnum) + "_side.jpeg"
+			imgname3 = "image/sample" + str(imgnum) + "_back.jpeg"
 			image1 = Image.open(imgname1)
 			image2 = Image.open(imgname2)
 			image3 = Image.open(imgname3)
@@ -182,9 +182,9 @@ class App2(App):
 		h1 = 288 #front画像表示サイズ
 		w2 = 144 #side,back画像表示サイズ
 		h2 = 144 #side,back画像表示サイズ
-		imgname1 = "sample" + str(self.prebest) + "_front.jpeg"
-		imgname2 = "sample" + str(self.prebest) + "_side.jpeg"
-		imgname3 = "sample" + str(self.prebest) + "_back.jpeg"
+		imgname1 = "image/sample" + str(self.prebest) + "_front.jpeg"
+		imgname2 = "image/sample" + str(self.prebest) + "_side.jpeg"
+		imgname3 = "image/sample" + str(self.prebest) + "_back.jpeg"
 		image1 = Image.open(imgname1)
 		image2 = Image.open(imgname2)
 		image3 = Image.open(imgname3)
