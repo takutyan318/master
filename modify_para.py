@@ -63,7 +63,7 @@ class modify1(object):
 		base = [0]*m #パラメータ推定で参照するサンプル番号
 		sortlist = []
 		estimatedParam = numpy.zeros((n,paramnum)) #推定されたパラメータ値格納用
-		estimatedParam_kinji = numpy.zeros((n,paranum)) #estimatedParamの要素を整数化にする
+		estimatedParam_kinji = numpy.zeros((n,paramnum)) #estimatedParamの要素を整数化にする
 
 		
 		#探索の中心座標
@@ -95,7 +95,7 @@ class modify1(object):
 			for j in range(545):
 				dis[j] = math.sqrt(math.pow(selectedPoint[i][0]-self.sample[j][0],2) + math.pow(selectedPoint[i][1]-self.sample[j][1],2) + math.pow(selectedPoint[i][2]-self.sample[j][2],2) + math.pow(selectedPoint[i][3]-self.sample[j][3],2))
 			#非類似度で辞書disをソーティングする
-			sortlist = sorted(self.dis.items(), key=lambda x:x[1])
+			sortlist = sorted(dis.items(), key=lambda x:x[1])
 			#soetlist[i][0] = キー sortlist[i][1] = 非類似度
 			#参照されるサンプル番号をbaseに格納する
 			for j in range(m):
@@ -133,7 +133,7 @@ class modify1(object):
 						else:
 							k_kosuu[6] = k_kosuu[6] + 1
 
-					tasuuketu = sorted(self.k_kosuu.items(), key=lambda x:x[1], reverse = True) #出現回数が多いパラメータ値の順番に並び変える
+					tasuuketu = sorted(k_kosuu.items(), key=lambda x:x[1], reverse = True) #出現回数が多いパラメータ値の順番に並び変える
 					maxkaisuu = tasuuketu[0][1] #一番多い回数
 					same = [] #前形のそれぞれにパラメータ値の回数が被った時用　→　ランダムで決めるため
 					for z in tasuuketu:
@@ -145,7 +145,7 @@ class modify1(object):
 					estimatedParam[i][j-4] = same[0]
 					estimatedParam_kinji[i][j-4] = same[0]
 
-			return estimatedParam_kinji
+		return estimatedParam_kinji
 
 	#候補のヘアスタイル番号を返す
 	def hairdesign(estimatedParam):
@@ -232,6 +232,8 @@ class modify2(modify1):
 if __name__ == '__main__':
 	md1 = modify1(1,1)
 	md1.readfile("zahyou3.csv")
-	print md1.sample[544]
+	r = md1.searchRange()
+	a = md1.m1select(r)
+	print a
 
 
