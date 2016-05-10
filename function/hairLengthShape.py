@@ -2,6 +2,7 @@
 # coding: utf-8
 
 #ヘアデザイン部で矛盾のあるパラメータを見つけ出すための関数を集めたもの
+#function/hairLengthShape
 
 
 #パラメータ「長さ」について調べる
@@ -19,6 +20,5 @@ def length(hl):
 		return True, max_name, min_name
 	else:
 		return False
-
 
 

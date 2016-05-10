@@ -10,7 +10,7 @@ import sys
 #入力部
 imageword = sys.argv[1]
 imageword = imageword.decode('utf-8')  #日本語の文字列処理を行うため文字列をunicode文字列に変換する必要がある
-print u"入力後: " + imageword
+print u"入力語: " + imageword
 
 
 #印象推定部
