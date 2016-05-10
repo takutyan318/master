@@ -11,6 +11,7 @@ import math
 import csv
 import numpy
 import random
+import hairLengthShape from function
 
 #１回目の修正
 class modify1(object):
@@ -149,14 +150,22 @@ class modify1(object):
 
 	#候補のヘアスタイル番号を返す
 	def hairdesign(estimatedParam):
-		samplepara = self.sample[i][4:]
-		matchingnum = 0
-		for i in range(545):
-			if estimatedParam == samplepara:
-				matchingnum = i + 1   #推定パラメータと完全に一致した画像番号
+		out_number = [0,0,0,0,0,0,0,0,0,0] #出力する画像番号格納用
 
-		#完全一致するパラメータをもったサンプルがなかった場合
-		#if matchingnum == 0:
+		for i in range(10):
+			matching_frag = 0 #パラメータが完全一致すれば1をたてる
+
+			for s in range(545):
+				if estimatedParam[i] == map(int, self.sample[s][4:]):
+					out_number[i] = s + 1
+					matching_frag = 1
+					break #サンプル全探索ループから抜け出す
+
+			if matching_frag == 1:
+				continue
+			#ここまではパラメータが完全一致した時
+
+
 			
 
 					
