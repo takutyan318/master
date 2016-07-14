@@ -5,29 +5,29 @@
 
 import cv2
 import numpy as np
+import sys
 
+
+# マウスイベント時に処理を行う
+def mouse_event(event, x, y, flags, param):
+
+    # 左クリックで赤い円形を生成
+    if event == cv2.EVENT_LBUTTONUP:
+        cv2.circle(img, (x, y), 10, (0, 0, 255), -1)
+        print '(' + str(x) + ', ' + str(y) + ')'
 
 if __name__ == '__main__':
-	img = cv2.imread('../image/sample227_front.jpeg', 0)
-	height1 = img.shape[0]
-	width1 = img.shape[1]
-	img_large = cv2.resize(img,(2*height1, 2*width1))
-	height2 = img_large.shape[0]
-	width2 = img_large.shape[1]
+	# 画像の読み込み
+	img = cv2.imread('../image/sample2_front.jpeg')
+	# ウィンドウのサイズを変更可能にする
+	cv2.namedWindow("img", cv2.WINDOW_NORMAL)
+	# マウスイベント時に関数mouse_eventの処理を行う
+	cv2.setMouseCallback('img', mouse_event)
 
-	count1 = 0
-	for i in range(height1):
-		for j in range(width1):
-			if img[i][j] < 10:
-				count1 += 1
-	print 'hair region in normal image is ' + str(count1)
+	# 「Q」が押されるまで画像を表示する
+	while (True):
+	    cv2.imshow('img', img)
+	    if cv2.waitKey(1) & 0xFF == ord("q"):
+	        break
 
-	count2 = 0
-	for i in range(height2):
-		for j in range(width2):
-			if img_large[i][j] < 10:
-				count2 += 1
-	print 'hair region in large image is ' + str(count2)
-
-	print ''
-	print count2 / count1
+	cv2.destroyAllWindows()
