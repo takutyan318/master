@@ -7,6 +7,7 @@ import cv
 import cv2
 import numpy as np
 import pylab as plt
+import sys
 
 #マスク画像作成（フロント用）
 def mask_front(fileName):
@@ -15,16 +16,17 @@ def mask_front(fileName):
 	img_bw = cv.CreateImage(cv.GetSize(img_gray_mat), cv.IPL_DEPTH_8U, 1) #マスク画像を描画する場所作成
 	img_bw_mat = cv.GetMat(img_bw)  #マット型の情報取得
 
-	threshold = 25
+	threshold = 70
 	cv.Threshold(img_gray_mat, img_bw_mat, threshold, 255, cv.CV_THRESH_BINARY_INV)   #２値化処理
 	img_bw_array = np.asarray(img_bw_mat)  #マット型から配列型へ
 	
 	#ノイズ除去
 	#[200:300, 50:150]でノイズが発生している
-	for h in range(200,301):
-		for w in range(50,151):
-			if img_bw_array[h,w] == 255:
-				img_bw_array[h,w] = 0
+	#if flag == 1:
+	#	for h in range(230,301):
+	#		for w in range(50,151):
+	#			if img_bw_array[h,w] == 255:
+	#				img_bw_array[h,w] = 0
 
 	return img_bw_array
 	#画像表示
@@ -41,21 +43,21 @@ def mask_side(fileName):
 	img_bw = cv.CreateImage(cv.GetSize(img_gray_mat), cv.IPL_DEPTH_8U, 1) #マスク画像を描画する場所作成
 	img_bw_mat = cv.GetMat(img_bw)  #マット型の情報取得
 
-	threshold = 25
+	threshold = 70
 	cv.Threshold(img_gray_mat, img_bw_mat, threshold, 255, cv.CV_THRESH_BINARY_INV)   #２値化処理
 	img_bw_array = np.asarray(img_bw_mat)  #マット型から配列型へ
 	
 	#ノイズ除去
 	#[200:240, 70:140]でノイズが発生している
-	for h in range(200,241):
-		for w in range(70,141):
-			if img_bw_array[h,w] == 255:
-				img_bw_array[h,w] = 0
+	#for h in range(200,241):
+	#	for w in range(70,141):
+	#		if img_bw_array[h,w] == 255:
+	#			img_bw_array[h,w] = 0
 	#[260:300, 140:200]でもノイズ発生
-	for h in range(260,301):
-		for w in range(140,201):
-			if img_bw_array[h,w] == 255:
-				img_bw_array[h,w] = 0
+	#for h in range(260,301):
+	#	for w in range(140,201):
+	#		if img_bw_array[h,w] == 255:
+	#			img_bw_array[h,w] = 0
 
 	return img_bw_array
 	#画像表示
@@ -72,7 +74,7 @@ def mask_back(fileName):
 	img_bw = cv.CreateImage(cv.GetSize(img_gray_mat), cv.IPL_DEPTH_8U, 1) #マスク画像を描画する場所作成
 	img_bw_mat = cv.GetMat(img_bw)  #iplからマット型の情報を取得
 
-	threshold = 30
+	threshold = 80
 	cv.Threshold(img_gray_mat, img_bw_mat, threshold, 255, cv.CV_THRESH_BINARY_INV)   #２値化処理
 	img_bw_array = np.asarray(img_bw_mat)  #マット型から配列型へ
 	
@@ -111,11 +113,17 @@ def syn(foreground, background, out, mask):
 			bb2 = background_b[h][w]
 			gg2 = background_g[h][w]
 			rr2 = background_r[h][w]
-			kk = mask[h][w]
-	
-			out_b[h][w] = (bb1*kk + bb2*(255-kk)) / 255
-			out_g[h][w] = (gg1*kk + gg2*(255-kk)) / 255
-			out_r[h][w] = (rr1*kk + rr2*(255-kk)) / 255
+			if mask[h][w] == 0:
+				kk = 0
+			elif mask[h][w] == 255:
+				kk = 1
+			else:
+				print 'ERROR'
+				sys.exit()
+
+			out_b[h][w] = bb1*kk + bb2*(1-kk)
+			out_g[h][w] = gg1*kk + gg2*(1-kk)
+			out_r[h][w] = rr1*kk + rr2*(1-kk)
 			
 	return cv2.merge((out_b, out_g, out_r))
 
@@ -124,9 +132,9 @@ def syn(foreground, background, out, mask):
 
 if __name__ == '__main__':
 	#画像読み込み（前景）
-	fn_f = '../image/sample545_front.jpeg'   #合成するヘアサンプル画像の名前
-	fn_s = '../image/sample545_side.jpeg'
-	fn_b = '../imageAfterTriming/sample545_back.jpeg'
+	fn_f = '../image2/sample18_front.jpeg'   #合成するヘアサンプル画像の名前
+	fn_s = '../image2/sample18_side.jpeg'
+	fn_b = '../image2/sample18_back.jpeg'
 	im_f = cv2.imread(fn_f, cv2.IMREAD_COLOR)
 	im_s = cv2.imread(fn_s, cv2.IMREAD_COLOR)
 	im_b = cv2.imread(fn_b, cv2.IMREAD_COLOR)
@@ -137,7 +145,7 @@ if __name__ == '__main__':
 	im_input = cv2.imread(fn_input, cv2.IMREAD_COLOR)
 
 	#２値化処理
-	mask_f = mask_front(fn_f)
+	mask_f = mask_front(fn_f, 0)
 	mask_s = mask_side(fn_s)
 	mask_b = mask_back(fn_b)
 
@@ -151,17 +159,10 @@ if __name__ == '__main__':
 	synImage_s = syn(im_s, im_input, image_out, mask_s)
 	synImage_b = syn(im_b, im_input, image_out, mask_b)
 
-	plt.subplot(2,2,1)
-	plt.imshow(synImage_f, 'gray')
-	plt.subplot(2,2,2)
-	plt.imshow(synImage_s, 'gray')
-	plt.subplot(2,2,3)
-	plt.imshow(synImage_b, 'gray')
-	plt.show()
-	#cv2.imshow('synthesis', synImage)
-	#cv2.waitKey(0)
-	#cv2.destroyAllWindows
-
-
-
-
+	
+	while (True):
+		cv2.imshow('mask', mask_s)
+		cv2.imshow('clomakie', synImage_s)
+		if cv2.waitKey(1) & 0xFF == ord("q"):
+			break
+	cv2.destroyAllWindows()

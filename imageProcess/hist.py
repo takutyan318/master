@@ -86,9 +86,9 @@ def hist_average():
 
 #一つのサンプルに対するヒストグラム
 def hist_one(sampleNum):
-	fn_f = '../image/sample' + sampleNum + '_front.jpeg'
-	fn_s = '../image/sample' + sampleNum + '_side.jpeg'
-	fn_b = '../image/sample' + sampleNum + '_back.jpeg'
+	fn_f = '../image2/sample' + str(sampleNum) + '_front.jpeg'
+	fn_s = '../image2/sample' + str(sampleNum) + '_side.jpeg'
+	fn_b = '../image2/sample' + str(sampleNum) + '_back.jpeg'
 	im_f = cv2.imread(fn_f, 0)
 	im_s = cv2.imread(fn_s, 0)
 	im_b = cv2.imread(fn_b, 0)
@@ -200,55 +200,8 @@ def hist_groupAverage_b(groupNum):
 
 
 if __name__ == '__main__':
-	#表示するものを決定する
-	inp = int(raw_input('見たい部位を選択してください。前:1 横:2 後ろ:3　'))
-	if inp == 1:
-		figure1 = hist_groupAverage_f(1)
-		figure2 = hist_groupAverage_f(2)
-		figure3 = hist_groupAverage_f(3)
-		figure4 = hist_groupAverage_f(4)
-	elif inp == 2:
-		figure1 = hist_groupAverage_s(1)
-		figure2 = hist_groupAverage_s(2)
-		figure3 = hist_groupAverage_s(3)
-		figure4 = hist_groupAverage_s(4)
-	else:
-		figure1 = hist_groupAverage_b(1)
-		figure2 = hist_groupAverage_b(2)
-		figure3 = hist_groupAverage_b(3)
-		figure4 = hist_groupAverage_b(4)
-
-
-	#長さ１
-	plt.subplot(2,2,1)
-	plt.hist(figure1, 256, [0,256])
-	plt.xlim([-10,256])
-	plt.ylim([0,1000])
-	plt.title('length = 1')
-
-	#長さ２
-	plt.subplot(2,2,2)
-	plt.hist(figure2, 256, [0,256])
-	plt.xlim([-10,256])
-	plt.ylim([0,1000])
-	plt.title('length = 2')
-
-	#長さ３
-	plt.subplot(2,2,3)
-	plt.hist(figure3, 256, [0,256])
-	plt.xlim([-10,256])
-	plt.ylim([0,1000])
-	plt.title('length = 3')
-
-	#長さ４
-	plt.subplot(2,2,4)
-	plt.hist(figure4, 256, [0,256])
-	plt.xlim([-10,256])
-	plt.ylim([0,1000])
-	plt.title('length = 4')
-
-	plt.show()
-
+	hist_one(18)
+	
 
 
 

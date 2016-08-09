@@ -34,9 +34,12 @@ def trimming():
 if __name__ == '__main__':
 	width = 640
 	height = 480
+	inputFileName = '/Users/takuya/MayaModelColorChainge/sample1_front.jpeg'
+	saveFileName = '/Users/takuya/ihairsystem/image2/sample1_front.jpeg'
 	try:
-		img = Image.open('/Users/takuya/Desktop/sample_back/sample545_back.jpg')
+		img = Image.open(inputFileName)
 		img = img.crop((width/4, height/6, width*3/4, height*5/6))
-		img.save("/Users/takuya/ihairsystem/imageAfterTriming/sample545_back.jpeg", "JPEG")
+		img.save(saveFileName , "JPEG")
+
 	except IOError:
 		print "Error"

@@ -68,7 +68,9 @@ def zahyou_get(img):
 
 #ヘアスタイルのスケールを顔の大きさに合わせる
 #引数は顔の縦と横の長さ + 変形するサンプル画像
-def scale(s_h_length, s_w_length, i_h_length, i_w_length, img):
+#スケール変更に伴ってサンプル画像の顔中心点を更新する必要あり
+#s_centerX, s_centerYはスケール変更前の中心座標
+def scale(s_h_length, s_w_length, i_h_length, i_w_length, img, s_centerX, s_centerY):
 	#少数化
 	s_h_length = float(s_h_length)
 	s_w_length = float(s_w_length)
@@ -86,8 +88,67 @@ def scale(s_h_length, s_w_length, i_h_length, i_w_length, img):
 	transeform_w = int(round(width*compare_w, 0))
 
 	#リサイズ
-	transeImg = cv2.resize(img, (transeform_h, transeform_w))
-	return transeImg
+	transeImg = cv2.resize(img, (transeform_w, transeform_h))
+	#リサイズ後のヘアスタイル画像の顔の中心座標を求める。
+	s_centerX_resize = s_centerX * compare_w
+	s_centerY_resize = s_centerY * compare_h
+	s_centerX_resize = int(round(s_centerX_resize,0))
+	s_centerY_resize = int(round(s_centerY_resize,0))
+
+	return transeImg, s_centerX_resize, s_centerY_resize
+
+
+
+#位置合わせ処理で扱う関数
+#画像を平行移動した際に生じる黒い部分を白に変更する関数
+def blackToWhite(tx, ty, imgTranselation, h ,w):
+	if (tx>0) and (ty>0):
+		for i in range(ty):
+			for j in range(w):
+				imgTranselation[i][j] = [255, 255, 255]
+		for i in range(ty, h):
+			for j in range(tx):
+				imgTranselation[i][j] = [255, 255, 255]
+	elif (tx>0) and (ty==0):
+		for i in range(h):
+			for j in range(tx):
+				imgTranselation[i][j] = [255, 255, 255]
+	elif (tx>0) and (ty<0):
+		for i in range(h+ty):
+			for j in range(tx):
+				imgTranselation[i][j] = [255, 255, 255]
+		for i in range(h+ty, h):
+			for j in range(w):
+				imgTranselation[i][j] = [255, 255, 255]
+	elif (tx==0) and (ty>0):
+		for i in range(ty):
+			for j in range(w):
+				imgTranselation[i][j] = [255, 255, 255]
+	elif (tx==0) and (ty<0):
+		for i in range(h+ty, h):
+			for j in range(w):
+				imgTranselation[i][j] = [255, 255, 255]
+	elif (tx<0) and (ty>0):
+		for i in range(ty):
+			for j in range(w):
+				imgTranselation[i][j] = [255, 255, 255]
+		for i in range(ty, h):
+			for j in range(w+tx, w):
+				imgTranselation[i][j] = [255, 255, 255]
+	elif (tx<0) and (ty==0):
+		for i in range(h):
+			for j in range(w+tx, w):
+				imgTranselation[i][j] = [255, 255, 255]
+	elif (tx<0) and (ty<0):
+		for i in range(h+ty):
+			for j in range(w+tx, w):
+				imgTranselation[i][j] = [255, 255, 255]
+		for i in range(h+ty, h):
+			for j in range(w):
+				imgTranselation[i][j] = [255, 255, 255]
+	else:
+		pass
+
 
 #位置合わせ処理
 #スケール変更後のサンプル(s_img)と入力画像(i_img)を引数にとりサンプル画像を平行移動させた画像を出力させる。
@@ -111,41 +172,56 @@ def matchPoint(s_img, i_img, i_face_cX, i_face_cY, s_face_cX, s_face_cY):
 	triming_left = i_face_cX - x
 	triming_right = i_face_cX + x
 	if triming_top < 0:
-		while (triming_top >= 0):
+		while (triming_top < 0):
 			triming_top += 1
 			triming_bottom += 1
 			if triming_bottom > height_i:
 				print 'ImageError : Please re-take the face photo.'
 				sys.exit()
 	elif triming_bottom > height_i:
-		while (triming_bottom <= height_i):
+		while (triming_bottom > height_i):
 			triming_top -= 1
 			triming_bottom -= 1
 			if triming_top < 0:
 				print 'ImageError : Please re-take the face photo.'
 				sys.exit()
 	elif triming_left < 0:
-		while (triming_left >= 0):
+		while (triming_left < 0):
 			triming_left += 1
 			triming_right += 1
 			if triming_right > width_i:
 				print 'ImageError : Please re-take the face photo.'
 				sys.exit()
+	elif triming_right > width_i:
+		while (triming_right > width_i):
+			triming_left -= 1
+			triming_right -= 1
+			if triming_left < 0:
+				print 'ImageError : Please re-take the face photo.'
+				sys.exit()
 
-
-
-
-	i_img_triming = i_img[triming_top : triming_bottom, triming_left : triming_right]  #トリミング処理
-
-	
+	#トリミング処理
+	i_img_triming = i_img[triming_top : triming_bottom, triming_left : triming_right]  
 	
 	#トリミング後の原点はトリミング前の(i_face_cX - x, i_face_cY - y)
 	#入力画像のトリミング後の顔中心座標補正
-	i_face_cX = i_face_cX - (i_face_cX - x)  #トリミング後の入力画像の顔の中心座標 (x)
-	i_face_cY = i_face_cY - (i_face_cY - y)  #トリミング後の入力画像の顔の中心座標 (y)
+	i_face_cX = i_face_cX - triming_left  #トリミング後の入力画像の顔の中心座標 (x)
+	i_face_cY = i_face_cY - triming_top  #トリミング後の入力画像の顔の中心座標 (y)
 
-	#test
-	return i_face_cX, i_face_cY, i_img_triming
+	#移動方向を決める
+	transelationX = i_face_cX - s_face_cX
+	transelationY = i_face_cY - s_face_cY
+
+	#サンプル画像の平行移動処理
+	M = np.float32([[1,0,transelationX], [0,1,transelationY]])
+	sampleTranselation = cv2.warpAffine(s_img, M, (int(width_s), int(height_s)))
+
+	#平行移動後に生じる黒い部分に対する処理
+	blackToWhite(transelationX, transelationY, sampleTranselation,  int(height_s), int(width_s))
+
+	#トリミング処理をした入力画像と位置合わせをしたサンプル画像を返す
+	#この後に返した二つの画像をクロマキー合成すればヘアスタイル合成が出来るはず
+	return i_img_triming, sampleTranselation
 
 
 
@@ -161,9 +237,9 @@ if __name__ == '__main__':
 	sFace_width = sampleFacepoint_w[1][0] - sampleFacepoint_w[0][0]  #サンプルの顔の横の長さ
 	#サンプル画像の中心座標を求める
 	sFace_centerPointX = (float(sampleFacepoint_w[0][0]) + float(sampleFacepoint_w[1][0])) / 2.0
-	sFace_centerPointX = int(round(sFace_centerPointX, 0))  #整数化
+	sFace_centerPointX_int = int(round(sFace_centerPointX, 0))  #整数化
 	sFace_centerPointY = (float(sampleFacePoint_h[0][1]) + float(sampleFacePoint_h[1][1])) / 2.0
-	sFace_centerPointY = int(round(sFace_centerPointY, 0)) #整数化
+	sFace_centerPointY_int = int(round(sFace_centerPointY, 0)) #整数化
 
 	#入力顔画像情報取得
 	inputImg = cv2.imread('../image/face/test_front.jpeg')
@@ -172,26 +248,28 @@ if __name__ == '__main__':
 	iFace_width = abs(inputFace_w_point[1][0] - inputFace_w_point[0][0])   #入力顔画像の横の長さ
 	#入力画像の顔の中心座標を求める
 	iFace_centerPointX = (float(inputFace_w_point[0][0]) + float(inputFace_w_point[1][0])) / 2.0
-	iFace_centerPointX = int(round(iFace_centerPointX, 0))  #整数化
+	iFace_centerPointX_int = int(round(iFace_centerPointX, 0))  #整数化
 	iFace_centerPointY = (float(inputFace_h_point[0][1]) + float(inputFace_h_point[1][1])) / 2.0
-	iFace_centerPointY = int(round(iFace_centerPointY, 0))  #整数化
+	iFace_centerPointY_int = int(round(iFace_centerPointY, 0))  #整数化
 
+	#顔情報取得時に描かれた図形が邪魔なので再び同じものを読み込む
+	inputImg = cv2.imread('../image/face/test_front.jpeg')
 
 	#スケール合わせ
-	sampleImg = cv2.imread('../image/sample2_front.jpeg')
-	sampleImg_transe = scale(sFace_height, sFace_width, iFace_height, iFace_width, sampleImg)
-
+	sampleImg = cv2.imread('../image/sample124_front.jpeg')
+	sampleImg_transe, sFace_centerPointX_transe, sFace_centerPointY_transe= scale(sFace_height, sFace_width, iFace_height, iFace_width, sampleImg, sFace_centerPointX, sFace_centerPointY)
+	
 
 	#位置合わせ
 	#iFace_centerPointX_triming : 入力画像のトリミング後の顔中心座標(x) iFace_centerPointY_triming : 入力画像のトリミング後の顔中心座標(y)
 	#inputImg_triming : 入力画像をトリミングした画像
-	iFace_centerPointX_triming, iFace_centerPointY_triming, inputImg_triming = matchPoint(sampleImg_transe, inputImg, iFace_centerPointX, iFace_centerPointY, sFace_centerPointX, sFace_centerPointY)
+	inputFaceImg, hairImg = matchPoint(sampleImg_transe, inputImg, iFace_centerPointX_int, iFace_centerPointY_int, sFace_centerPointX_transe, sFace_centerPointY_transe)
 
-	#cv2.circle(inputImg, (iFace_centerPointX, iFace_centerPointY), 10, (0, 0, 255), -1)
-	#cv2.circle(inputImg_triming, (iFace_centerPointX_triming, iFace_centerPointY_triming), 10, (255, 0, 0), -1)
+
+	
 	while (True):
-		#cv2.imshow('inputImg', inputImg)
-		cv2.imshow('inputImg_triming', inputImg_triming)
+		cv2.imshow('Face', inputFaceImg)
+		cv2.imshow('hair', hairImg)
 		if cv2.waitKey(1) & 0xFF == ord("q"):
 			break
 	cv2.destroyAllWindows()
