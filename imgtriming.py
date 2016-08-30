@@ -34,8 +34,9 @@ def trimming():
 if __name__ == '__main__':
 	width = 640
 	height = 480
-	inputFileName = '/Users/takuya/MayaModelColorChainge/sample1_front.jpeg'
-	saveFileName = '/Users/takuya/ihairsystem/image2/sample1_front.jpeg'
+	samplenum = raw_input('トリミングしたいサンプル番号を入力してください : ')
+	inputFileName = '/Users/takuya/MayaModelColorChainge/sample' + samplenum + '_front.jpeg'
+	saveFileName = '/Users/takuya/ihairsystem/image2/sample' + samplenum + '_front.jpeg'
 	try:
 		img = Image.open(inputFileName)
 		img = img.crop((width/4, height/6, width*3/4, height*5/6))

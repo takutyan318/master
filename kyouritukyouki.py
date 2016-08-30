@@ -3,6 +3,7 @@
 
 import sys
 import WebHitxml2
+import WebHitFromgoogle
 import math
 import csv
 import numpy
@@ -26,10 +27,9 @@ class ImpressionEstimate(object):
 				length = len(self.inputAdj)
 				self.copyAdj = self.inputAdj[:length-1]
 				self.copyAdj = self.copyAdj + u"で"
-
-			return True
 		else:
-			return False
+			print u'「い」か「な」で終わる形容詞形容動詞の言葉を入力してください'
+			sys.exit()
 
 	def estimateFactorValue(self):
 		#活動性因子のヒット件数
@@ -51,7 +51,7 @@ class ImpressionEstimate(object):
 		r2 = 0.0 #類似度（正）
 		volt = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0] #各印象語対に対する印象値
 		m = 2.5 #指数の底
-		search = WebHitxml2.Websearch()
+		search = WebHitxml2.Websearch()  #BingのAPIとgoogleのAPIの切り替えはこの部分のみを変更すればいい
 
 		print "-----活動性因子の検索結果-----"
 		#活動性因子に対する印象推定

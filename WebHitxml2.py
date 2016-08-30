@@ -52,5 +52,6 @@ class Websearch(object):
 
 if __name__ == '__main__':
     web = Websearch()
+    print web.track_stream('a')
     
 
