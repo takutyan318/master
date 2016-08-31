@@ -7,6 +7,7 @@
 import cv2
 import numpy as np
 import random
+import math
 
 
 def colorAnalyze_getSample(img):
@@ -40,12 +41,30 @@ def colorAnalyze_getSample(img):
 def colorAnalyze_mono(img, searchPoint):
 	data = []  #統計分析をかけるデータの集合
 	hanni = 25
+	t = 1.98  #区間推定の係数
+	n = 0.0
+	mean = 0.0
+	var = 0.0 #不偏分散
+	u_min = 0.0  #信頼区間下限値
+	u_max = 0.0  #信頼区間上限値
 
+	#統計処置にかけるサンプルを収集
 	for i in searchPoint:
 		for j in range(10):
 			sx = random.randint(i[0]-hanni,i[0]+hanni)
 			sy = random.randint(i[1]-hanni,i[1]+hanni)
-			cv2.circle(img, (sx,sy), 1, (255,0,0), -1)
+			data.append(int(img[sy,sx]))
+
+	#統計処理
+	data = np.array(data)
+	n = len(data)  #標本サイズ
+	mean = np.average(data)  #標本平均
+	var = np.var(data, ddof=1)
+	u_min = mean - t*math.sqrt(var/n)
+	u_max = mean + t*math.sqrt(var/n)
+	return mean, u_min, u_max
+
+			
 
 
 
@@ -64,7 +83,13 @@ if __name__ == '__main__':
 	#分析
 	img = cv2.imread(imgName)
 	img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-	colorAnalyze_mono(img_gray, sp)
+	m, sita, ue = colorAnalyze_mono(img_gray, sp)
+	print '標本平均'
+	print m
+	print '下限値'
+	print sita
+	print '上限値'
+	print ue
 
 	#test
 	#while (True):
