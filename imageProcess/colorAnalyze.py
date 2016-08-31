@@ -62,8 +62,68 @@ def colorAnalyze_mono(img, searchPoint):
 	var = np.var(data, ddof=1)
 	u_min = mean - t*math.sqrt(var/n)
 	u_max = mean + t*math.sqrt(var/n)
-	return mean, u_min, u_max
+	return mean, u_min, u_max, var
 
+#img : ３チャンネルの画像
+def colorAnalyze_3channel(img, searchPoint):
+	data_B = []  #統計分析をかけるデータの集合（青チャンネル）
+	data_G = []  #統計分析をかけるデータの集合（緑チャンネル）
+	data_R = []  #統計分析をかけるデータの集合（赤チャンネル）
+	hanni = 25
+	t = 1.98  #区間推定の係数
+	n = 0   #標本数
+	mean_B = 0.0  #青チャンネルの標本平均
+	mean_G = 0.0  #緑チャンネルの標本平均
+	mean_R = 0.0  #赤チャンネルの標本平均
+	var_B = 0.0  #青チャンネルの不偏分散
+	var_G = 0.0  #緑チャンネルの不偏分散
+	var_R = 0.0  #赤チャンネルの不偏分散
+	u_min_B = 0.0 #青チャンネルの下限値
+	u_max_B = 0.0 #青チャンネルの上限値
+	u_min_G = 0.0 #緑チャンネルの下限値
+	u_max_G = 0.0 #緑チャンネルの上限値
+	u_min_R = 0.0 #赤チャンネルの下限値
+	u_max_R = 0.0 #赤チャンネルの上限値
+
+	#統計処置にかけるサンプルを収集
+	for i in searchPoint:
+		for j in range(10):
+			sx = random.randint(i[0]-hanni,i[0]+hanni)
+			sy = random.randint(i[1]-hanni,i[1]+hanni)
+			data_B.append(int(img[sy,sx,0]))
+			data_G.append(int(img[sy,sx,1]))
+			data_R.append(int(img[sy,sx,2]))
+	print '青チャンネルデータ'
+	print data_B
+	print '緑チャンネルデータ'
+	print data_G
+	print '赤チャンネルデータ'
+	print data_R
+
+	#統計処置
+	data_B = np.array(data_B)
+	data_G = np.array(data_G)
+	data_R = np.array(data_R)
+	n = len(data_B)
+	print n
+	mean_B = np.average(data_B)
+	mean_G = np.average(data_G)
+	mean_R = np.average(data_R)
+	var_B = np.var(data_B, ddof=1)
+	var_G = np.var(data_G, ddof=1)
+	var_R = np.var(data_R, ddof=1)
+	u_min_B = mean_B - t*math.sqrt(var_B/n)
+	u_max_B = mean_B + t*math.sqrt(var_B/n)
+	u_min_G = mean_G - t*math.sqrt(var_G/n)
+	u_max_G = mean_G + t*math.sqrt(var_G/n)
+	u_min_R = mean_R - t*math.sqrt(var_R/n)
+	u_max_R = mean_R + t*math.sqrt(var_R/n)
+
+	mean = [mean_B, mean_G, mean_R]
+	var = [var_B, var_G, var_R]
+	u_min = [u_min_B, u_min_G, u_min_R]
+	u_max = [u_max_B, u_max_G, u_max_R]
+	return mean, u_min, u_max, var
 			
 
 
@@ -82,14 +142,16 @@ if __name__ == '__main__':
 
 	#分析
 	img = cv2.imread(imgName)
-	img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-	m, sita, ue = colorAnalyze_mono(img_gray, sp)
+	#img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+	m, sita, ue, var = colorAnalyze_3channel(img, sp)
 	print '標本平均'
 	print m
 	print '下限値'
 	print sita
 	print '上限値'
 	print ue
+	print '不偏分散'
+	print var
 
 	#test
 	#while (True):
